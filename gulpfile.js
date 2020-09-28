@@ -1,5 +1,7 @@
 "use strict";
 
+//https://css-tricks.com/gulp-for-beginners/
+
 // Load plugins
 const autoprefixer = require("gulp-autoprefixer");
 const browsersync = require("browser-sync").create();
@@ -129,6 +131,32 @@ function watchFiles() {
   gulp.watch(["./js/**/*", "!./js/**/*.min.js"], js);
   gulp.watch("./**/*.html", browserSyncReload);
 }
+
+
+
+// Optimizing Images
+
+gulp.task('images', function(){
+  return gulp.src('app/images/**/*.+(png|jpg|gif|svg)')
+  .pipe(imagemin())
+  .pipe(gulp.dest('dist/images'))
+});
+
+// Optimizing images however, is an extremely slow process that you’d not want to repeat unless necessary
+var cache = require('gulp-cache');
+
+gulp.task('images', function(){
+  return gulp.src('app/images/**/*.+(png|jpg|jpeg|gif|svg)')
+  // Caching images that ran through imagemin
+  .pipe(cache(imagemin({
+      interlaced: true
+    })))
+  .pipe(gulp.dest('dist/images'))
+});
+
+
+
+
 
 // Define complex tasks
 const vendor = gulp.series(clean, modules);
